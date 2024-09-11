@@ -22,11 +22,14 @@ export function middleware(req: NextRequest){
     })
   }
 
-  return new NextResponse(JSON.stringify({
-    success: true, message: 'user successfully authenticated'
-  }), {
-    status: 200
-  })
+
+  const response = NextResponse.next()
+
+  response.headers.set('x-auth-status', 'authenticated')
+
+  console.log('User successfully authenticated')
+
+  return response
 
 }
 
