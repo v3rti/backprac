@@ -1,14 +1,37 @@
 import { NextResponse } from "next/server";
-import { NextRequest } from "next/server";
+import type {NextRequest} from "next/server";
+
+
+// checking for a valid key in the authorization header.
+
+const apikeyExample = 'SAIO27JSB5';
 
 export function middleware(req: NextRequest){
 
-  console.log(`log from middleware: ${req.method}, ${req.url}`)
+  const authKey = req.headers.get('authorization');
 
+  console.log("Auth key: ", authKey);
 
-  const response = NextResponse.next();
-  return response;
+  if(authKey !== apikeyExample){
+    return new NextResponse(JSON.stringify(
+      {success: false, message: 'authentication error'}
+    ), {
+      status: 401, headers: {
+        'content-type': 'application/json'
+      }
+    })
+  }
+
+  return new NextResponse(JSON.stringify({
+    success: true, message: 'user successfully authenticated'
+  }), {
+    status: 200
+  })
+
 }
+
+
+
 
 export const config = {
   matcher: '/api/:path*',
